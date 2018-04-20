@@ -12,7 +12,8 @@ class Config {
 		this.config = workspace.getConfiguration("androidEmulatorLauncher");
 	}
 
-    get emulatorPath(): string { return this.config.get<string>("emulatorPath")!; }
+    get emulatorPath() { return this.config.get<string>("emulatorPath")!; }
+    get adbPath() { return this.config.get<string>("adbPath")!; }
 }
 
 export const config = new Config();

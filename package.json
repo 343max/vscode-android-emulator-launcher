@@ -29,6 +29,12 @@
                     "default": "~/Library/Android/sdk/tools/emulator",
                     "description": "absolute path of the `emulator` tool",
                     "scope": "application"
+                },
+                "androidEmulatorLauncher.adbPath": {
+                    "type": "string",
+                    "default": "~/Library/Android/sdk/platform-tools/adb",
+                    "description": "absolute path of `adb`",
+                    "scope": "application"
                 }
             }
         }
