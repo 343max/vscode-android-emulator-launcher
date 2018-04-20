@@ -8,27 +8,28 @@ interface QuickPickEmulatorItem extends vscode.QuickPickItem {
 
 export function activate(context: vscode.ExtensionContext) {
     let launcher = new EmulatorLauncher();
-    let disposable = vscode.commands.registerCommand('extension.androidEmulatorLauncher', () => {
-        launcher.emulators().then(emulators => {
-            vscode.window.showQuickPick(emulators.map(emulator => {
+
+    context.subscriptions.push(vscode.commands.registerCommand('extension.androidEmulatorLauncher', () => {
+        vscode.window.showQuickPick(launcher.emulators().then<QuickPickEmulatorItem[]>(emulators => {
+            return emulators.map(emulator => {
                 return <QuickPickEmulatorItem>{
                     label: emulator.name,
                     detail: emulator.running ? 'running' : 'not running',
                     emulator: emulator
                 };
-            }), {canPickMany: false}).then(((item => {
-                if (!item) {
-                    return;
-                }
+            });
+        }), {canPickMany: false}).then(((item => {
+            if (!item) {
+                return;
+            }
 
-                if (!item.emulator.running) {
-                    launcher.launch(item.emulator);
-                }
-            })));
-        });
-    });
+            let emulator = item.emulator;
 
-    context.subscriptions.push(disposable);
+            if (!emulator.running) {
+                launcher.launch(emulator);
+            }
+        })));
+    }));
 }
 
 export function deactivate() {
