@@ -23,7 +23,7 @@ export interface Emulator {
 export class EmulatorLauncher {
     public async launch(emulator: Emulator) {
         console.assert(!emulator.running);
-        await exec(config.emulatorPath + ' -avd ' + emulator.name + '&');
+        return exec(`${config.emulatorPath} -avd ${emulator.name} &`);
     }
 
     public async activate(emulator: Emulator) {
@@ -47,7 +47,7 @@ end tell'`;
     }
 
     private async allEmulatorNames(): Promise<string[]> {
-        let { stdout } = await exec(config.emulatorPath + ' -list-avds');
+        let { stdout } = await exec(`${config.emulatorPath} -list-avds`);
         return stdout.split(/\r{0,1}\n/).filter(l => {
             return l !== '';
         }).map(l => {
@@ -94,18 +94,18 @@ end tell'`;
 
             client.on('close', () => {
                 if (!dataReceived) {
-                    console.warn('no name received on port' + port);
+                    console.warn(`no name received on port ${port}`);
                     reject();
                 }
             });
 
             client.on('timeout', () => {
-                console.warn('timeout on port ' + port);
+                console.warn(`timeout on port ${port}`);
                 reject();
             });
 
             client.on('error', (error) => {
-                console.warn('error on port ' + port + ': ' + error);
+                console.warn(`error on port ${port}: ${error}`);
                 reject();
             });
             
@@ -113,7 +113,7 @@ end tell'`;
     }
 
     private async runningEmulatorPorts(): Promise<number[]> {
-        let { stdout } = await exec(config.adbPath + ' devices');
+        let { stdout } = await exec(`${config.adbPath} devices`);
         let r = /emulator-([0-9]+)/g;
         var ports = <number[]>[];
         var m;
