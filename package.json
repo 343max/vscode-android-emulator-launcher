@@ -11,16 +11,27 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onCommand:extension.androidEmulatorLauncher"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.sayHello",
-                "title": "Hello World"
+                "command": "extension.androidEmulatorLauncher",
+                "title": "Launch Android Emulator"
             }
-        ]
+        ],
+        "configuration": {
+            "title": "Android Emulator Launcher Configuration",
+            "properties": {
+                "androidEmulatorLauncher.emulatorPath": {
+                    "type": "string",
+                    "default": "~/Library/Android/sdk/tools/emulator",
+                    "description": "absolute path of the `emulator` tool",
+                    "scope": "application"
+                },
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
