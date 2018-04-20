@@ -29,7 +29,7 @@
                     "default": "~/Library/Android/sdk/tools/emulator",
                     "description": "absolute path of the `emulator` tool",
                     "scope": "application"
-                },
+                }
             }
         }
     },

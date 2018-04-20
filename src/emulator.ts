@@ -13,12 +13,12 @@ function exec(command: string, options: cp.ExecOptions = {}): Promise<{ stdout: 
 }
 
 export interface Emulator {
-    name: String;
+    name: string;
     running: Boolean;
 }
 
 export class EmulatorLauncher {
-    get path() {
+    get path(): string {
         return config.emulatorPath;
     }
 
@@ -34,9 +34,7 @@ export class EmulatorLauncher {
         });
     }
 
-    public launch(emulator: Emulator) {
-        cp.exec(this.path + ' -avd ' + emulator.name, <cp.ExecOptions>{
-            detaced: true
-        });
+    public async launch(emulator: Emulator) {
+        await exec(this.path + ' -avd ' + emulator.name + '&');
     }
 }
