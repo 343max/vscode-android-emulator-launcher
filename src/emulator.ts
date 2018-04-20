@@ -57,12 +57,20 @@ end tell'`;
 
     private async runningEmulators(): Promise<Emulator[]> {
         let ports = await this.runningEmulatorPorts();
-        console.dir(ports);
         return Promise.all(ports.map(port => {
             return this.runningEmulatorName(port).then(name => {
                 return <Emulator>{name: name, running: true, port: port};
+            }).catch(() => {
+                return null;
             });
-        }));
+        })).then(es => {
+            // todo: is there really no better way to acomplish this? https://stackoverflow.com/questions/43118692/typescript-filter-out-nulls-from-an-array
+            function notNull<Emulator>(value: Emulator | null): value is Emulator {
+                return value !== null;
+            }
+
+            return es.filter(notNull);
+        });
     }
 
     private async runningEmulatorName(port: number): Promise<string> {
