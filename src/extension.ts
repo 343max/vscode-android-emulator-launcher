@@ -21,7 +21,9 @@ export function activate(context: vscode.ExtensionContext) {
                     return;
                 }
 
-                launcher.launch(item.emulator);
+                if (!item.emulator.running) {
+                    launcher.launch(item.emulator);
+                }
             })));
         });
     });
