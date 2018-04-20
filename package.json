@@ -4,6 +4,9 @@
     "description": "Launch Android Emulators directly from VS Code.",
     "version": "0.9.0",
     "publisher": "343max",
+    "repository": {
+        "url": "https://github.com/343max/vscode-android-emulator-launcher"
+    },
     "engines": {
         "vscode": "^1.22.0"
     },
