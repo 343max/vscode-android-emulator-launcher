@@ -16,21 +16,33 @@ function exec(command: string, options: cp.ExecOptions = {}): Promise<{ stdout: 
 
 export interface Emulator {
     name: string;
-    running: Boolean;
+    running?: Boolean;
+    port?: number;
 }
 
 export class EmulatorLauncher {
     public async launch(emulator: Emulator) {
+        console.assert(!emulator.running);
         await exec(config.emulatorPath + ' -avd ' + emulator.name + '&');
     }
 
+    public async activate(emulator: Emulator) {
+        console.assert(emulator.running);
+        console.assert(emulator.port);
+        let pid = await this.emulatorPID(emulator.port!);
+        let osascript = `osascript -e 'tell application "System Events"
+    set processList to every process whose unix id is ${pid}
+    repeat with proc in processList
+        set the frontmost of proc to true
+    end repeat
+end tell'`;
+        return exec(osascript);
+    }
+
     public async emulators(): Promise<Emulator[]> {
-        let [all, running] = await Promise.all([this.allEmulatorNames(), this.runningEmulatorNames()]);
+        let [all, running] = await Promise.all([this.allEmulatorNames(), this.runningEmulators()]);
         return all.map(name => {
-            return {
-                name: name,
-                running: running.includes(name)
-            };
+            return running.find((emulator) => emulator.name === name) || { name: name, running: false };
         });
     }
 
@@ -43,11 +55,13 @@ export class EmulatorLauncher {
         });
     }
 
-    private async runningEmulatorNames(): Promise<string[]> {
+    private async runningEmulators(): Promise<Emulator[]> {
         let ports = await this.runningEmulatorPorts();
         console.dir(ports);
-        return Promise.all<string>(ports.map(port => {
-            return this.runningEmulatorName(port);
+        return Promise.all(ports.map(port => {
+            return this.runningEmulatorName(port).then(name => {
+                return <Emulator>{name: name, running: true, port: port};
+            });
         }));
     }
 
@@ -75,6 +89,8 @@ export class EmulatorLauncher {
                     }
                 }
             });
+
+            client.setTimeout(100);
 
             client.on('close', () => {
                 if (!dataReceived) {
@@ -105,5 +121,11 @@ export class EmulatorLauncher {
             ports.push(parseInt(m[1]));
         }
         return ports;
+    }
+
+    private async emulatorPID(port: number): Promise<number> {
+        return exec(`lsof -n -i4TCP:${port} | grep LISTEN`).then(({stdout}) => {
+            return parseInt(stdout.split(/\s+/)[1]);
+        });
     }
 }

@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
             return emulators.map(emulator => {
                 return <QuickPickEmulatorItem>{
                     label: emulator.name,
-                    detail: emulator.running ? 'running' : 'not running',
+                    detail: emulator.running ? `activate emulator-${emulator.port}` : 'launch',
                     emulator: emulator
                 };
             });
@@ -27,6 +27,8 @@ export function activate(context: vscode.ExtensionContext) {
 
             if (!emulator.running) {
                 launcher.launch(emulator);
+            } else {
+                launcher.activate(emulator);
             }
         })));
     }));
