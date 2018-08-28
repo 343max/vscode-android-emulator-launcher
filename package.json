@@ -29,7 +29,7 @@
             "properties": {
                 "androidEmulatorLauncher.emulatorPath": {
                     "type": "string",
-                    "default": "~/Library/Android/sdk/tools/emulator",
+                    "default": "~/Library/Android/sdk/emulator/emulator",
                     "description": "absolute path of the `emulator` tool",
                     "scope": "application"
                 },
