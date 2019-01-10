@@ -4,7 +4,7 @@ Launch & Activate Emulators straight from VS Code
 
 ## Features
 
-Cmd-Shit-P > Launch Android Emulator
+Cmd-Shift-P > Launch Android Emulator
 
 ## Requirements
 
